@@ -20,7 +20,7 @@ A reusable starting point for projects in the Mechanical Engineering Department.
 
   Waratchanon Jaroenwong 6730466621 (Multibody simulation)
 
-  Waritsara Jongsomboonpoka 6730472321 (symbolic mathematics)
+  Waritsara Jongsomboonpoka 6730472321 (Symbolic mathematics)
 - **Status:** Planning
 - **Last updated:** [YYYY-MM-DD]
 
