@@ -12,9 +12,12 @@ A reusable starting point for projects in the Mechanical Engineering Department.
 
 ## Project overview
 
-- **Project name:** [Enter project name]
+- **Project name:** Delta Robot
 - **Problem / purpose:** [Describe the engineering need]
-- **Team:** [Names and responsibilities]
+- **Team:**
+Thanyarat Roongsitmeteekul 6730233721 (Physical prototype)
+Waratchanon Jaroenwong 6730466621 (Multibody simulation)
+Waritsara Jongsomboonpoka 6730472321 (symbolic mathematics)
 - **Status:** Planning
 - **Last updated:** [YYYY-MM-DD]
 
