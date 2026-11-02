@@ -16,8 +16,8 @@ A reusable starting point for projects in the Mechanical Engineering Department.
 - **Problem / purpose:** [Describe the engineering need]
 - **Team:**
 Thanyarat Roongsitmeteekul 6730233721 (Physical prototype)
-Waratchanon Jaroenwong 6730466621 (Multibody simulation)
-Waritsara Jongsomboonpoka 6730472321 (symbolic mathematics)
+/n Waratchanon Jaroenwong 6730466621 (Multibody simulation)
+/n Waritsara Jongsomboonpoka 6730472321 (symbolic mathematics)
 - **Status:** Planning
 - **Last updated:** [YYYY-MM-DD]
 
