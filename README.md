@@ -13,7 +13,7 @@ A reusable starting point for projects in the Mechanical Engineering Department.
 ## Project overview
 
 - **Project name:** Delta Robot
-- **Problem / purpose:** [Describe the engineering need]
+- **Problem / purpose:** This repository contains the complete design and analysis workflow for a Delta Robot, a 3-DOF parallel manipulator driven by three revolute actuators through parallelogram linkages. The project integrates analytical kinematics, symbolic computation, multibody simulation, and hardware design.
 - **Team:**
 
   Thanyarat Roongsitmeteekul 6730233721 (Physical prototype)
