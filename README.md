@@ -28,7 +28,7 @@ Analysis of Position, Velocity, Acceleration, and Force using MATLAB.
 
 [Click to open folder] [software](software/)
 
-[Click to open file] [Symbolic Math](assets/documents/)
+[Click to open file] [Symbolic Math](software/Symbolic%20Math)
 
 ## Part III: Simscape Multibody 
 Delta Robot Motion Simulation.
