@@ -1,19 +1,8 @@
-# Mechanical Engineering Project Template
-
-A reusable starting point for projects in the Mechanical Engineering Department. Use this repository as a template to organize a project’s mechanical design, electronics, software, machine skills, simulation, documentation, experiments, and publications.
-
-## Getting started
-
-1. Select **Use this template** on GitHub to create a repository for your project.
-2. Rename the project in this README and update the project summary, team, and objectives.
-3. Review the folder READMEs and replace the examples with project-specific information.
-4. Create GitHub Issues for tasks and record important design decisions and test results.
-5. Check the license placeholder and select appropriate terms before sharing or reusing project work.
-
+# Design, Kinematic Analysis, and Prototyping of a Delta Robot 
 ## Project overview
-
+2103322 (2026/1) MECHANICS OF MACHINERY
 - **Project name:** Delta Robot
-- **Problem / purpose:** This repository contains the complete design and analysis workflow for a Delta Robot, a 3-DOF parallel manipulator driven by three revolute actuators through parallelogram linkages. The project integrates analytical kinematics, symbolic computation, multibody simulation, and hardware design.
+- **Purpose:** 
 - **Team:**
 
   Thanyarat Roongsitmeteekul 6730233721 (Physical prototype)
@@ -22,28 +11,21 @@ A reusable starting point for projects in the Mechanical Engineering Department.
 
   Waritsara Jongsomboonpoka 6730472321 (Symbolic mathematics)
 - **Status:** Planning
-- **Last updated:** [YYYY-MM-DD]
+- **Last updated:** [2026-11-DD]
 
-## Repository structure
+## Delta Robot
 
-| Path | Purpose |
-|---|---|
-| `hardware/mechanical/` | CAD models, drawings, and fabrication files |
-| `hardware/electronics/` | Schematics, PCB files, and wiring diagrams |
-| `hardware/bom.csv` | Bill of materials with quantities, units, and sourcing details |
-| `software/firmware/` | Microcontroller code and board setup |
-| `software/application/` | PC or Raspberry Pi application code |
-| `machine-skills/` | Machine commands, procedures, and skill instructions |
-| `simulation/` | Models, scripts, assumptions, and simulation results |
-| `docs/` | Assembly, setup, operation, and maintenance instructions |
-| `media/` | Images, GIFs, and links to demonstration videos |
-| `experiments/` | Procedures, raw data, and results |
-| `publications/` | Project-related journal and conference papers |
+## Mechanism Design, Kinematic Analysis, and Prototyping
+This repository contains the complete design and analysis workflow for a Delta Robot, a 3-DOF parallel manipulator driven by three revolute actuators through parallelogram linkages. The project integrates analytical kinematics, symbolic computation, multibody simulation, and hardware design.
 
-## Collaboration and file practices
+## Part I: Kinematic Diagram and DoF analysis
+The Delta robot has 3 degrees of freedom (3 DoF) and employs a parallel-kinematic manipulator mechanism.
 
-Use descriptive filenames and commit messages. Record units, revisions, software versions, and assumptions. Keep editable source files where practical. Avoid committing credentials, private data, temporary files, or duplicate exports. Consider Git LFS for large CAD, simulation, and video files.
+ [docs](docs/)
 
-## Safety and validation
+## Part II: Symbolic Math
 
-Document hazards, safeguards, and operating limits before testing hardware. Validate important calculations and simulation results against measurements where practical.
+## Part III: Simscape Multibody 
+
+## Part IV: Prototype
+
