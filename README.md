@@ -24,7 +24,7 @@ The Delta robot has 3 degrees of freedom (3 DoF) and employs a parallel-kinemati
 [Click to open folder] [docs](docs/)
 
 ## Part II: Symbolic Math
-Analysis of Position, Velocity, Acceleration, and Force using MATLAB.
+Analysis of Position, Angle, Velocity, Acceleration, and Force using MATLAB.
 
 [Click to open folder] [software](software/)
 
