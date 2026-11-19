@@ -46,7 +46,7 @@ Max torque = 38.4 N.mm (0.39 kg.cm), 3.6 % of stall
 Max cond(J) = 1.46 (The closer infinity, the closer to a singularity)
 
 <p align="center">
-<img width="625" height="486" alt="image" src="https://github.com/user-attachments/assets/cbfede25-a4af-4f28-b8bb-808b6e78283d" />
+<img width="625" height="693" alt="image" src="https://github.com/user-attachments/assets/edff152e-b785-4e8c-92b9-fa34219badd9" />
 
 <img width="1600" height="900" alt="image" src="https://github.com/user-attachments/assets/8daf070b-0038-4514-a19e-c91c1f173d7e" />
 </p>
