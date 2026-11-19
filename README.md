@@ -59,10 +59,52 @@ https://github.com/user-attachments/assets/49e93c41-96c3-493c-aa9b-d0f54fe8aff5
 
 [Click to open file] [Symbolic Math](software/Symbolic%20Math)
 
-## Part III: Simscape Multibody 
-Delta Robot Motion Simulation.
+## Part III: Simscape Multibody
+Delta Robot motion simulation in Simscape Multibody: reachable workspace, a circular trajectory driven by inverse kinematics, and the angle, angular velocity, angular acceleration and torque that each servo joint must deliver.
+
+**Actuator:** `Clock → circle_IK (MATLAB Function) → 3 servo revolute joints`. The block computes the effector position on the path at time *t*, then solves the inverse kinematics (A cos θ + B sin θ = K) to get the three servo angles. The motion parameters are set in one file, `params_delta.m`.
+
+| Geometry (measured from the model) | Value |
+|---|---|
+| Servo arm length L1 | 40.0 mm |
+| Rod length L2 | 82.0 mm |
+| Base radius f / Effector radius e | 40.72 mm / 29.64 mm |
+
+### Workspace
+Usable full circle r = 43 mm for z = −59 … −105 mm below the servo shafts (best height z = −81 mm), vertical stroke 72 mm.
+
+<p align="center">
+<img width="625" alt="Multibody workspace 3D" src="simulation/multibody/results/workspace/workspace_3d.png" />
+<img width="450" alt="Top view at best height" src="simulation/multibody/results/workspace/top_view_best_height.png" />
+</p>
+
+### Circular motion
+Home → straight line → circle R = 30 mm at z = −81 mm (2 laps in 4 s) → home, 7.3 s total, minimum-jerk profile s = 10x³ − 15x⁴ + 6x⁵ (velocity and acceleration start and end at zero).
+
+| Servo joint | Servo 1 | Servo 2 | Servo 3 |
+|---|---|---|---|
+| Angle θ (below horizontal) | 2.5 … 80.6° | 2.5 … 80.6° | 2.5 … 80.6° |
+| Max angular velocity | 157.4 °/s | 151.8 °/s | 150.0 °/s |
+| Max angular acceleration | 892 °/s² | 937 °/s² | 787 °/s² |
+| Max torque (no payload) | 22.5 mN·m | 23.0 mN·m | 22.0 mN·m |
+
+Effector max speed 176.7 mm/s, max acceleration 1041 mm/s², path deviation ≤ 0.71 mm.
+Simscape joint results agree with the analytical velocity/acceleration analysis (θ̇ = sᵀẊ / sᵀC′) within 0.63°, 3.8 °/s and 31 °/s².
+
+<p align="center">
+<img width="625" alt="Servo angle" src="simulation/multibody/results/circle/2_servo_angle.png" />
+<img width="625" alt="Servo angular velocity" src="simulation/multibody/results/circle/3_servo_velocity.png" />
+<img width="625" alt="Servo angular acceleration" src="simulation/multibody/results/circle/4_servo_acceleration.png" />
+<img width="625" alt="Servo torque" src="simulation/multibody/results/circle/5_servo_torque.png" />
+</p>
+
+Animation
+
+[media/delta_robot_circle_multibody.mp4](media/delta_robot_circle_multibody.mp4)
 
 [Click to open folder] [simulation](simulation/)
+
+[Click to open file] [Multibody README](simulation/README.md)
 
 ## Part IV: Prototype
 Design and Fabrication of a Delta Robot Prototype Using 3D Printing, with MG996R Servo Motor Installation.
@@ -78,4 +120,3 @@ Video prototype
 https://github.com/user-attachments/assets/066ec897-29dd-44cb-ad2d-f1037f18571c
 
 [Click to open folder] [hardware](hardware/)
-
