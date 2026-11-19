@@ -182,11 +182,11 @@ fprintf('Max torque = %.1f N.mm (%.2f kg.cm), %.1f %% of stall\n', max(abs(TAU(:
 fprintf('Max cond(J) = %.2f (The closer infinity, the closer to a singularity)\n', max(Jc));
 % Plot kinematics 
 % plot p(mm) Give blue -> x, red -> y, yellow -> z
-figure('Name','Kinematics','Color','w','Position',[80 80 900 700]);
-subplot(4,1,1); plot(t,pth); ylabel('p (mm)'); 
+figure('Name','Kinematics','Color','w','Position',[80 80 900 1000]);
+subplot(4,1,1); plot(t,pth); ylabel('p (mm)'); ylim([-100 40]);
 legend('x','y','z','Location','eastoutside'); grid on; subplot(4,1,2);
 % plot θ
-plot(t,THdeg);
+plot(t,THdeg); ylim([-20 20]);
 ylabel('\theta (deg)'); legend('\theta_1','\theta_2','\theta_3','Location','eastoutside');
 grid on; subplot(4,1,3);
 % plot V (mm/s)
