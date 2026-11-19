@@ -1,3 +1,5 @@
 # Media
 
-Store project images, GIFs, and concise clips here. Use descriptive filenames and captions; link to externally hosted videos from this README or a project page. Avoid duplicate or unnecessarily large exports.
+| File | Caption |
+|---|---|
+| `delta_robot_circle_multibody.mp4` | Simscape Multibody animation: home → circle (R = 30 mm at 81 mm below the servo shafts, 2 laps) → home, 7.3 s, isometric view |
