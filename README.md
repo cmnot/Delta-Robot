@@ -131,7 +131,7 @@ Delta Robot motion simulation in Simscape Multibody: reachable workspace, a circ
 **Actuator:** `Clock → circle_IK (MATLAB Function) → 3 servo revolute joints`. The block computes the effector position on the path at time *t*, then solves the inverse kinematics (A cos θ + B sin θ = K) to get the three servo angles. The motion parameters are set in one file, `params_delta.m`.
 
 <p align="center">
-<img width="900" alt="Simscape Multibody model with circle_IK actuator" src="media/multibody_model_diagram.png" />
+<img width="900" alt="Simscape Multibody model with circle_IK actuator" src="simulation/multibody/multibody_model_diagram.png" />
 </p>
 
 | Geometry (measured from the model) | Value |
@@ -153,7 +153,7 @@ Home → straight line → circle R = 30 mm at z = −81 mm (2 laps in 4 s) → 
 
 | Servo joint | Servo 1 | Servo 2 | Servo 3 |
 |---|---|---|---|
-| Angle θ (below horizontal) | 2.5 - 80.6° | 2.5 - 80.6° | 2.5 - 80.6° |
+| Angle θ (below horizontal) | 2.5 … 80.6° | 2.5 … 80.6° | 2.5 … 80.6° |
 | Max angular velocity | 157.4 °/s | 151.8 °/s | 150.0 °/s |
 | Max angular acceleration | 892 °/s² | 937 °/s² | 787 °/s² |
 | Max torque (no payload) | 22.5 mN·m | 23.0 mN·m | 22.0 mN·m |
