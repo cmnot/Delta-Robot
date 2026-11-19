@@ -1,0 +1,8 @@
+
+===== Workspace (robot frame: z = 0 at servo shafts, up positive) =====
+Limits: arm -30..90 deg below horizontal, ball tilt <= 35 deg
+On the robot axis the effector reaches z = -49.0 .. -121.0 mm (stroke 72.0 mm)
+Largest usable full circle : radius 43.0 mm, for z = -59.0 .. -105.0 mm
+Best work height           : z = -81.0 mm
+Max horizontal reach       : 54.0 mm from the axis
+Home pose                  : z = -119.5 mm

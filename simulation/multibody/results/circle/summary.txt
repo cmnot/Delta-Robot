@@ -1,0 +1,29 @@
+
+===== Circle: R = 30 mm at z = -81 mm, 2 laps in 4 s (home -> circle -> home, 7.3 s total) =====
+Effector: max speed 176.7 mm/s, max acceleration 1040.9 mm/s^2, max path deviation 0.7063 mm
+
+SERVO JOINTS (what each servo must deliver)
+                                  servo 1      servo 2      servo 3
+theta min [deg]                      2.48         2.48         2.48
+theta max [deg]                     80.65        80.65        80.65
+theta range [deg]                   78.17        78.17        78.17
+|omega| max [deg/s]                157.39       151.82       150.00
+|omega| max [rad/s]                 2.747        2.650        2.618
+|omega| max [rpm]                  26.232       25.304       25.000
+|alpha| max [deg/s^2]              891.95       937.49       786.50
+|alpha| max [rad/s^2]              15.567       16.362       13.727
+|tau| max [mN*m]                    22.53        23.03        22.03
+|tau| max [kgf*cm]                  0.230        0.235        0.225
+tau rms [mN*m]                      14.90        17.51        11.97
+|power| max [W]                    0.0493       0.0486       0.0472
+
+CHECK Simscape vs analytical (max difference)
+theta [deg]                        0.6318       0.6095       0.6021
+omega [deg/s]                      3.5751       3.7577       3.1525
+alpha [deg/s^2]                   31.3939      28.4708      26.6980
+
+PASSIVE BALL JOINTS (relative to the part they sit on)
+arm side |omega| max [deg/s]       120.56       123.32       123.81
+arm side |alpha| max [deg/s^2]       737.33       688.92       681.41
+eff. side |omega| max [deg/s]       128.52       128.44       123.29
+eff. side |alpha| max [deg/s^2]       758.32       795.37       737.54
