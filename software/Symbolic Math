@@ -16,7 +16,7 @@ P.g = 9.81; % Gravity
 P.sg = 1
 tauStall = 1079; % MG996R N.m
 recordVideo = true;
-aviName = 'delta_robot_motion.avi';
+aviName = 'Mechanism.avi';
 
 
 %% Symbolic Kinematics
@@ -201,7 +201,7 @@ save('delta_trajectory.mat','t','pth','ink','THdeg','V','Ava','TAU','P');
 
 %% Animation
 % Create GUT
-fig = figure('Name','Delta Robot','Color','w','Position',[60 60 1280 720], 'MenuBar','none','ToolBar','none','Resize','off');
+fig = figure('Name','Delta Robot','Color','w','Position',[60 60 1000 750], 'MenuBar','none','ToolBar','none','Resize','off');
 
 % 3D robot
 ax3 = axes('Parent',fig,'Position',[0.04 0.17 0.52 0.77]); % 3D view point
@@ -247,8 +247,8 @@ btn = uicontrol('Style','togglebutton','String','Pause','Units','normalized', ..
 % Video record
 if recordVideo
     vw = VideoWriter(aviName,'Motion JPEG AVI');  
-    vw.FrameRate = fps;  
-    vw.Quality = 95;  
+    vw.FrameRate = 15;  
+    vw.Quality = 50;  
     open(vw);
 end
 
