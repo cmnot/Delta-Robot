@@ -99,8 +99,8 @@ Simscape joint results agree with the analytical velocity/acceleration analysis 
 </p>
 
 Animation
-https://github.com/user-attachments/assets/072f497b-4779-4905-a7a6-2cdd2447a263
 
+https://github.com/user-attachments/assets/072f497b-4779-4905-a7a6-2cdd2447a263
 
 
 [Click to open folder] [simulation](simulation/)
