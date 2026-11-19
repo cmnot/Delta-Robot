@@ -47,7 +47,7 @@ Max cond(J) = 1.46 (The closer infinity, the closer to a singularity)
 
 Animation
 
-
+<video src="./delta_robot_motion.mp4" controls width="100%"></video>
 
 [Click to open folder] [software](software/)
 
