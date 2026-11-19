@@ -2,7 +2,7 @@
 ## Project overview
 2103322 (2026/1) MECHANICS OF MACHINERY
 - **Project name:** Delta Robot
-- **Purpose:** 
+- **Purpose:** To investigate the kinematics of a 3D Delta parallel robot driven by motors on a fixed base, focusing on the link-and-joint relationships that govern the motion of the lower moving platform.
 - **Team:** 
 
   Thanyarat Roongsitmeteekul 6730233721 (Physical prototype)
