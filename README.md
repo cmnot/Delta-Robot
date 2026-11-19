@@ -55,7 +55,6 @@ Animation
 
 https://github.com/user-attachments/assets/49e93c41-96c3-493c-aa9b-d0f54fe8aff5
 
-
 [Click to open folder] [software](software/)
 
 [Click to open file] [Symbolic Math](software/Symbolic%20Math)
@@ -67,6 +66,16 @@ Delta Robot Motion Simulation.
 
 ## Part IV: Prototype
 Design and Fabrication of a Delta Robot Prototype Using 3D Printing, with MG996R Servo Motor Installation.
+
+Prototype
+<p align="center">
+<img width="750" height="750" alt="S__29188105_0" src="https://github.com/user-attachments/assets/00d800ea-82e6-425f-8161-ee607eed0dff" />
+
+<img width="750" height="750" alt="S__29188104_0" src="https://github.com/user-attachments/assets/a291d17b-46d2-44cd-8956-7c7e5269bbc7" />
+</p>
+Video prototype
+
+https://github.com/user-attachments/assets/066ec897-29dd-44cb-ad2d-f1037f18571c
 
 [Click to open folder] [hardware](hardware/)
 
