@@ -153,7 +153,7 @@ Home → straight line → circle R = 30 mm at z = −81 mm (2 laps in 4 s) → 
 
 | Servo joint | Servo 1 | Servo 2 | Servo 3 |
 |---|---|---|---|
-| Angle θ (below horizontal) | 2.5 … 80.6° | 2.5 … 80.6° | 2.5 … 80.6° |
+| Angle θ (below horizontal) | 2.5 - 80.6° | 2.5 - 80.6° | 2.5 - 80.6° |
 | Max angular velocity | 157.4 °/s | 151.8 °/s | 150.0 °/s |
 | Max angular acceleration | 892 °/s² | 937 °/s² | 787 °/s² |
 | Max torque (no payload) | 22.5 mN·m | 23.0 mN·m | 22.0 mN·m |
