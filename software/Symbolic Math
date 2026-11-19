@@ -1,21 +1,22 @@
 clear; clc; close all;
 
 % Parameter from CAD
-P.R = 75.488; % base center -> servo axis [mm]
+P.R = 40.72; % base center -> servo axis [mm]
 P.r = 29.64; % distance to the end of each link [mm]
 P.ds = 0; % offset platform joint -> joint [mm]
-P.L = 57; % forearm (servo horn) length [mm]
+P.L = 40; % forearm (servo horn) length [mm]
 P.l = 82; % link [mm]
 P.hT = 15; % half between the two parallelogram upper[mm]
 P.hB = 15; % half between the two parallelogram base[mm]
 P.phi = deg2rad([-90 30 150]); % servo position around z
-P.thLim = [15 170]; % usable servo range [deg]
-P.m = 0.1; % assume weight of platform + load mass [kg] 
+P.thLim = [0 90]; % usable servo range [deg]
+P.m = 0.06; % assume weight of platform + load mass [kg] 
 P.g = 9.81; % Gravity
 P.sg = 1
 tauStall = 1079; % MG996R N.m
 recordVideo = true;
 aviName = 'Mechanism.avi';
+
 
 
 %% Symbolic Kinematics
@@ -38,6 +39,7 @@ end
 disp('Loop constraints g_i(x,y,x, theta_i) = 0 : '); disp(g) % Equation of three symbolic
 
 
+
 %% Inverse Position kinematics : Ecosθ + Fsinθ + G = 0  (i = 1,2,3)
 thIK = sym(zeros(3,1));
 for i = 1:3
@@ -49,6 +51,7 @@ for i = 1:3
     thIK(i) = 2*atan2(-F + P.sg*sqrt(E^2+F^2-G^2), G - E); % θ_i  = 2arctan(ti) by ti = (-F ± (E^2 + F^2 -G^2)^(1/2))/(G - E)
 end
 disp('theta_i = IK(x,y,z): '); disp(thIK) 
+
 
 
 %% Jacobian: Jx*pdot = Jth*thdot -> pdot = J*thdot
@@ -89,6 +92,7 @@ fprintf('\n--- Validation vs CAD pose ---\n');
 fprintf('FK(theta_CAD) = [%.2f %.2f %.2f] mm   CAD = [%.2f %.2f %.2f] mm   |err| = %.2f mm\n', pFK, pCAD, norm(pFK-pCAD));
 fprintf('IK(p_CAD)     = [%.2f %.2f %.2f] deg  CAD = [%.2f %.2f %.2f] deg\n', thIKc, rad2deg(thCAD));
 
+
 %% Workspace of Delta Robot
 stp = 3; % step size 
 [WS, vol] = workspace_scan(P, -60:stp:60, -60:stp:60, -130:stp:-20, stp);
@@ -124,14 +128,17 @@ for q = 1:length(lList)
     Pq.l = lList(q);
     [~, vList(q)] = workspace_scan(Pq, -60:6:60, -60:6:60, -150:6:-10, 6);
 end
+
 % Find width of kinematics 
 widthA4 = 2*(P.R + P.L)*cosd(30); % W = 2*(R + L)*cos(30) check size of arms are fully extended fit within A4
-fprintf('Total width approx = %.1f mm ', widthA4); % A4 Width = 210 mm
+fprintf('Total width approx = %.1f mm ', widthA4); % A4 Width = 210 mm recheck size
+
 % Plot graph Design synthesis
 figure('Name','Synthesis','Color','w');
 plot(lList/P.L, vList/1000, 'o-', 'LineWidth', 1.4);
 grid on; xlabel('l / L'); ylabel('Usable workspace volume (cm^3)');
 title(sprintf('Synthesis: R=%g, r=%g, L=%g mm', P.R, P.r, P.L));
+
 
 %% Trajectory: p, v, a, torque
 % Create trajectory
@@ -181,19 +188,24 @@ fprintf('Max torque = %.1f N.mm (%.2f kg.cm), %.1f %% of stall\n', max(abs(TAU(:
 fprintf('Max cond(J) = %.2f (The closer infinity, the closer to a singularity)\n', max(Jc));
 % Plot kinematics 
 % plot p(mm) Give blue -> x, red -> y, yellow -> z
-figure('Name','Kinematics','Color','w','Position',[80 80 900 1000]);
+figure('Name','Kinematics','Color','w','Position',[80 80 900 1200]);
 subplot(4,1,1); plot(t,pth); ylabel('p (mm)'); ylim([-100 40]);
 legend('x','y','z','Location','eastoutside'); grid on; subplot(4,1,2);
+
 % plot θ
-plot(t,THdeg); ylim([-20 20]);
+plot(t,THdeg); ylim([-50 20]);
 ylabel('\theta (deg)'); legend('\theta_1','\theta_2','\theta_3','Location','eastoutside');
 grid on; subplot(4,1,3);
-% plot V (mm/s)
-plot(t,V); ylabel('v (mm/s)'); grid on;
+
+% plot Velocity (mm/s)
+plot(t,V); ylim([-600 600])
+ylabel('v (mm/s)'); grid on;
 subplot(4,1,4);
-% plot a (mm/s^2)
-plot(t,Ava); 
+
+% plot Acceleration (mm/s^2)
+plot(t,Ava); ylim([-30000 25000])
 ylabel('a (mm/s^2)'); xlabel('t (s)'); grid on;
+
 % Export to simscape model
 save('delta_trajectory.mat','t','pth','ink','THdeg','V','Ava','TAU','P');
 
@@ -211,7 +223,7 @@ title(ax3,'Delta Robot','FontSize',13);
 axTh = axes('Parent',fig,'Position',[0.64 0.74 0.34 0.20]); % Create the top right live plot of servo angles  
 hold(axTh,'on'); grid(axTh,'on');
 cols = lines(3);
-hDot = gobjects(1,3);
+hDot = gobjects(1,3); 
 for i = 1:3 
     plot(axTh,t,THdeg(:,i),'Color',cols(i,:),'LineWidth',1.3); 
     hDot(i) = plot(axTh,t(1),THdeg(1,i),'o', 'MarkerFaceColor',cols(i,:), 'MarkerEdgeColor','k');
@@ -219,7 +231,7 @@ end
 plot(axTh,[0 T],[P.thLim(1) P.thLim(1)],'k--'); 
 plot(axTh,[0 T],[P.thLim(2) P.thLim(2)],'k--');
 hCur = plot(axTh,[0 0],[-20 25],'Color',[.5 .5 .5]);
-ylim(axTh,[-20 25]); 
+ylim(axTh,[-40 25]); 
 xlim(axTh,[0 T]); ylabel(axTh,'\theta (deg)'); title(axTh,'Servo angles');
 legend(axTh,{'\theta_1','\theta_2','\theta_3'},'Location','northeast','Orientation','horizontal');
 
@@ -246,8 +258,8 @@ btn = uicontrol('Style','togglebutton','String','Pause','Units','normalized', ..
 % Video record
 if recordVideo
     vw = VideoWriter(aviName,'Motion JPEG AVI');  
-    vw.FrameRate = 15;  
-    vw.Quality = 50;  
+    vw.FrameRate = 30;  
+    vw.Quality = 80;  
     open(vw);
 end
 
