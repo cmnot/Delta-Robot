@@ -10,7 +10,7 @@
   Waratchanon Jaroenwong 6730466621 (Multibody simulation)
 
   Waritsara Jongsomboonpoka 6730472321 (Symbolic mathematics)
-- **Status:** Planning
+- **Status:** Finished
 - **Last updated:** 2026-11-20
 
 ### Introduction
