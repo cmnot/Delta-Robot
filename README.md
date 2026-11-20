@@ -213,7 +213,7 @@ https://github.com/user-attachments/assets/072f497b-4779-4905-a7a6-2cdd2447a263
 ## Part IV: Prototype
 Design and Fabrication of a Delta Robot Prototype Using 3D Printing, with MG996R Servo Motor Installation.
 
-Prototype
+## Prototype
 <p align="center">
 <img width="750" height="750" alt="S__29188105_0" src="https://github.com/user-attachments/assets/00d800ea-82e6-425f-8161-ee607eed0dff" />
 
