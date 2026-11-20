@@ -13,7 +13,22 @@
 - **Status:** Finished
 - **Last updated:** 2026-11-20
 
-### Introduction
+## Detail File
+
+This repository contains the kinematic analysis, dynamic modeling, Simscape Multibody simulation, and physical prototype documentation for the **Delta Robot**.
+
+## 📂 Project Overview & Navigation (Part I – Part IV)
+
+| Part | Project Scope | Directory | Contents & Files |
+| :---: | :--- | :--- | :--- |
+| **Part I** | **Basics, Kinematic Diagram & DoF Analysis** | [`docs/`](./docs/schematic) | • Kinematic diagram and schematic<br>• Degrees of Freedom (DoF / Grübler-Kutzbach) analysis (Main) |
+| **Part II** | **Symbolic Math (Position, Velocity, Acceleration & Force)** | [`software/`](./software/) | • [`Mechanism.mlx`](./software/Mechanism.mlx) — MATLAB Live Script with symbolic derivations and results<br>• [`Symbolic Math (Text box code)`](./software/Symbolic%20Math) — Plain script submitted in the assignment text box<br>• [`delta_trajectory.mat`](./software/delta_trajectory.mat) — Exported trajectory and torque dataset for Part III<br>• [`Mechanism.avi`](./software/Mechanism.avi) or [`Mechanism.avi in Main`](./Mechanism.avi)  3D animation showing servo angles and required torques |
+| **Part III** | **Simscape Multibody Simulation** | [`simulation/Multibody/`](./media) | • Simscape Multibody model files and simulation summary<br>• [`model/`](./media/delta_robot_circle_multibody.avi) — Simulation video recordings |
+| **Part IV** | **Built Mechanism (CAD & Prototype)** | [`Hardware/`](./hardware/) | • [`CAD_file`](./CAD_FILE_DELTAROBOT.zip) 3D CAD part and assembly files<br>• Photos of the physical prototype and mechanism testing |
+
+---
+
+### Introduction 
 A Delta Robot is a parallel mechanism widely used in industrial automation, where several links move together to position one platform quickly and accurately. Our Delta Robot has **11 links** connected by revolute and spherical joints. The Grübler–Kutzbach count gives **9 DoF**, which splits into
 
 - **3 external (useful) DoF** – translation of the moving platform along X, Y and Z, and
@@ -93,7 +108,7 @@ $$M = 6(11-1) - 5(3) - 4(6) - 3(6) = 3 \ \text{DoF}$$
 ## Part II: Symbolic Math
 Symbolic derivation and numerical validation of the Delta Robot kinematics, Jacobian matrix, workspace synthesis, and inverse dynamics in MATLAB (`Mechanism.mlx`). The coordinate frame, actuator azimuth angles ($\phi = [90^\circ, -30^\circ, -150^\circ]$ for servos A, B, and C), elbow-out configuration (`sg = -1`), and link color scheme are aligned directly with the kinematic diagram (`delta_schematic.m`) in **Part I** and the **Simscape Multibody** model in **Part III**.
 
-### 1. Closed-Form Kinematics & Jacobian Formulation
+### Closed-Form Kinematics & Jacobian Formulation
 Using the geometric parameters from the CAD model ($R = 40.72\text{ mm}$, $r = 29.64\text{ mm}$, $L = 40\text{ mm}$, $l = 82\text{ mm}$, $d_s = 0$), the script derives three vector-loop closure constraints $g_i(x,y,z,\theta_i) = 0$ and solves them symbolically to obtain closed-form **Inverse Kinematics** ($$\theta_i = \text{IK}(x,y,z)$$) via tangent half-angle substitution, alongside **Forward Kinematics** via trilateration:
 
 $$E_i \cos\theta_i + F_i \sin\theta_i + G_i = 0 \implies \theta_i = 2\,\text{atan2}\left(-F_i - \sqrt{E_i^2 + F_i^2 - G_i^2},\; G_i - E_i\right)$$
@@ -113,10 +128,10 @@ to evaluate Type 2 (coplanar forearms) and Type 1 (collinear arm and forearm) si
 <img width="390" height="235" alt="Closed-form inverse kinematics" src="https://github.com/user-attachments/assets/c86a2682-cbad-46f8-b4fa-258b74d62da8" />
 </p>
 
-### 2. Workspace & Design Synthesis
+### Workspace & Design Synthesis
 Evaluating reachable points within the usable servo range $\theta \in [0^\circ, 110^\circ]$ and away from singularities yields a total usable workspace volume of **$429.9\text{ cm}^3$**, fully enclosing the $R = 30\text{ mm}$ circular path at $z = -81\text{ mm}$. Parametric synthesis across link ratios ($l/L \in [1.5, 3.0]$) confirms that the maximum fully extended span is **$139.8\text{ mm}$**, fitting well within the **$210\text{ mm}$** A4 footprint constraint for the physical prototype in **Part IV**.
 
-### 3. Minimum-Jerk Trajectory & Virtual Work Dynamics
+### Minimum-Jerk Trajectory & Virtual Work Dynamics
 To cross-validate against **Part III**, the script executes the identical **7.3 s minimum-jerk trajectory** ($s(x) = 10x^3 - 15x^4 + 6x^5$): moving from `Home [0, 0, -119.55] mm` to a $R = 30\text{ mm}$ circle at $z = -81\text{ mm}$ (2 laps in 4 s) and returning home, then exports the time-series dataset (`delta_trajectory.mat`).
 
 | Analytical Metric (Symbolic / Virtual Work) | Value | Notes & Cross-Check with Part III |
@@ -132,7 +147,7 @@ To cross-validate against **Part III**, the script executes the identical **7.3 
 <img width="1600" height="900" alt="Kinematics Trajectory Plots" src="https://github.com/user-attachments/assets/3ca3e07e-c926-449d-9a46-6c8c15c1645a" />
 </p>
 
-Animation
+### Animation
 
 https://github.com/user-attachments/assets/34c20eda-8189-4b7b-8fbc-23f810a8b32f
 
@@ -187,7 +202,7 @@ Simscape joint results agree with the analytical velocity/acceleration analysis 
 <img width="625" alt="Servo torque" src="simulation/multibody/results/circle/5_servo_torque.png" />
 </p>
 
-Animation
+### Animation
 
 https://github.com/user-attachments/assets/072f497b-4779-4905-a7a6-2cdd2447a263
 
@@ -204,7 +219,8 @@ Prototype
 
 <img width="750" height="750" alt="S__29188104_0" src="https://github.com/user-attachments/assets/a291d17b-46d2-44cd-8956-7c7e5269bbc7" />
 </p>
-Video prototype
+
+## Video prototype
 
 https://github.com/user-attachments/assets/066ec897-29dd-44cb-ad2d-f1037f18571c
 
