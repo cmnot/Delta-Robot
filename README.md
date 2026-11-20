@@ -91,39 +91,52 @@ $$M = 6(11-1) - 5(3) - 4(6) - 3(6) = 3 \ \text{DoF}$$
 [Click to open file] [Kinematic diagram script](docs/schematic/delta_schematic.m)
 
 ## Part II: Symbolic Math
-Analysis of Position, Angle, Velocity, Acceleration, and Force using MATLAB.
+Symbolic derivation and numerical validation of the Delta Robot kinematics, Jacobian matrix, workspace synthesis, and inverse dynamics in MATLAB (`Mechanism.mlx`). The coordinate frame, actuator azimuth angles ($\phi = [90^\circ, -30^\circ, -150^\circ]$ for servos A, B, and C), elbow-out configuration (`sg = -1`), and link color scheme are aligned directly with the kinematic diagram (`delta_schematic.m`) in **Part I** and the **Simscape Multibody** model in **Part III**.
 
-Workspace volume (usable, theta in [0,90] deg) = 160.8 cm^3
+### 1. Closed-Form Kinematics & Jacobian Formulation
+Using the geometric parameters from the CAD model ($R = 40.72\text{ mm}$, $r = 29.64\text{ mm}$, $L = 40\text{ mm}$, $l = 82\text{ mm}$, $d_s = 0$), the script derives three vector-loop closure constraints $g_i(x,y,z,\theta_i) = 0$ and solves them symbolically to obtain closed-form **Inverse Kinematics** ($$\theta_i = \text{IK}(x,y,z)$$) via tangent half-angle substitution, alongside **Forward Kinematics** via trilateration:
+
+$$E_i \cos\theta_i + F_i \sin\theta_i + G_i = 0 \implies \theta_i = 2\,\text{atan2}\left(-F_i - \sqrt{E_i^2 + F_i^2 - G_i^2},\; G_i - E_i\right)$$
+
+Differentiating the loop constraints yields the analytical velocity mapping $\dot{\mathbf{p}} = \mathbf{J}\dot{\theta}$, where the Jacobian and its singularity determinants are given by:
+
+$$\mathbf{J} = \mathbf{J}_x^{-1}\mathbf{J}_\theta, \qquad \det(\mathbf{J}_x), \qquad \det(\mathbf{J}_\theta)$$
+
+to evaluate Type 2 (coplanar forearms) and Type 1 (collinear arm and forearm) singularities.
+
 
 <p align="center">
-<img width="640" height="279" alt="image" src="https://github.com/user-attachments/assets/0051185e-6d61-4be0-8bdc-254378b4d84c" />
+<img width="390" height="170" alt="Symbolic loop constraints" src="https://github.com/user-attachments/assets/de79fb87-9c11-4f77-8ce5-bfd62797738c" />
 </p>
 
-Total width approx = 139.8 mm 
 <p align="center">
-<img width="640" height="385" alt="image" src="https://github.com/user-attachments/assets/cb1367c2-3305-4ac0-ad1f-4cb13ec99606" />
+<img width="390" height="235" alt="Closed-form inverse kinematics" src="https://github.com/user-attachments/assets/c86a2682-cbad-46f8-b4fa-258b74d62da8" />
 </p>
 
-Velocity check  max|J*thdot - dp/dt| = 3567.633 mm/s
+### 2. Workspace & Design Synthesis
+Evaluating reachable points within the usable servo range $\theta \in [0^\circ, 110^\circ]$ and away from singularities yields a total usable workspace volume of **$429.9\text{ cm}^3$**, fully enclosing the $R = 30\text{ mm}$ circular path at $z = -81\text{ mm}$. Parametric synthesis across link ratios ($l/L \in [1.5, 3.0]$) confirms that the maximum fully extended span is **$139.8\text{ mm}$**, fitting well within the **$210\text{ mm}$** A4 footprint constraint for the physical prototype in **Part IV**.
 
-Max torque = 61.4 N.mm (0.63 kg.cm), 5.7 % of stall
+### 3. Minimum-Jerk Trajectory & Virtual Work Dynamics
+To cross-validate against **Part III**, the script executes the identical **7.3 s minimum-jerk trajectory** ($s(x) = 10x^3 - 15x^4 + 6x^5$): moving from `Home [0, 0, -119.55] mm` to a $R = 30\text{ mm}$ circle at $z = -81\text{ mm}$ (2 laps in 4 s) and returning home, then exports the time-series dataset (`delta_trajectory.mat`).
 
-Max cond(J) = 3.08 (The closer infinity, the closer to a singularity)
+| Analytical Metric (Symbolic / Virtual Work) | Value | Notes & Cross-Check with Part III |
+| :--- | :--- | :--- |
+| **Forward/Inverse Kinematics Consistency** | $3.39 \times 10^{-14}\text{ mm}$ | Exact round-trip numerical accuracy (`FK(IK(p))`) |
+| **Usable Workspace Volume ($\theta \in [0^\circ, 110^\circ]$)** | $429.9\text{ cm}^3$ | Fully contains the $R = 30\text{ mm}$ test circle at $z = -81\text{ mm}$ |
+| **Servo Angle Range ($\theta_1, \theta_2, \theta_3$)** | $2.5^\circ \dots 80.6^\circ$ | **Matches Simscape Multibody ($2.5^\circ \dots 80.6^\circ$)** |
+| **Max Condition Number $\max \mathrm{cond}(\mathbf{J})$** | $6.43$ | Well-conditioned and singularity-free throughout motion |
+| **Peak Required Torque ($m = 0.10\text{ kg}$ payload)** | $206.3\text{ N}\cdot\text{mm}$ ($2.10\text{ kg}\cdot\text{cm}$) | **$19.1\%$** of MG996R stall torque ($1079\text{ N}\cdot\text{mm}$); higher than Part III ($23.0\text{ mN}\cdot\text{m}$) because a $100\text{ g}$ end-effector payload is included via $\boldsymbol{\tau} = \mathbf{J}^T\mathbf{F}$ |
 
 <p align="center">
-<img width="640" height="850" alt="image" src="https://github.com/user-attachments/assets/d0f40537-ca2f-4907-803b-105d390131e2" />
-
-<img width="900" height="750" alt="image" src="https://github.com/user-attachments/assets/26b3ce82-a465-4ce3-bae3-465d74cb0a09" />
-
+<img width="837" height="657" alt="Workspace and Design Synthesis" src="https://github.com/user-attachments/assets/dfc64c46-1afb-4372-84a1-0a4276f53a54" />
+<img width="1600" height="900" alt="Kinematics Trajectory Plots" src="https://github.com/user-attachments/assets/3ca3e07e-c926-449d-9a46-6c8c15c1645a" />
 </p>
 
 Animation
 
-
-https://github.com/user-attachments/assets/2a31050f-cc57-4f75-8247-8ddaa2dc4467
+https://github.com/user-attachments/assets/34c20eda-8189-4b7b-8fbc-23f810a8b32f
 
 [Mechanism.avi](./Mechanism.avi)
-
 
 [Click to open folder] [software](software/)
 
