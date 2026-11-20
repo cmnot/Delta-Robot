@@ -120,6 +120,9 @@ Max cond(J) = 3.08 (The closer infinity, the closer to a singularity)
 Animation
 
 
+https://github.com/user-attachments/assets/2a31050f-cc57-4f75-8247-8ddaa2dc4467
+
+[Mechanism.avi](./Mechanism.avi)
 
 
 [Click to open folder] [software](software/)
