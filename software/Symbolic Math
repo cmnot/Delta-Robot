@@ -2,43 +2,39 @@ clear; clc; close all;
 
 % Parameter from CAD
 P.R = 40.72; % base center -> servo axis [mm]
-P.r = 29.64; % distance to the end of each link [mm]
+P.r = 29.64; % Radius: From the center of the platform to the midpoint between the ball joints (e) [mm]
 P.ds = 0; % offset platform joint -> joint [mm]
 P.L = 40; % forearm (servo horn) length [mm]
 P.l = 82; % link [mm]
 P.hT = 15; % half between the two parallelogram upper[mm]
 P.hB = 15; % half between the two parallelogram base[mm]
-P.phi = deg2rad([-90 30 150]); % servo position around z
-P.thLim = [0 90]; % usable servo range [deg]
-P.m = 0.06; % assume weight of platform + load mass [kg] 
+P.phi = deg2rad([90 -30 -150]); % servo position around z
+P.thLim = [0 110]; % usable servo range [deg]
+P.m = 0.1; % assume weight of platform + load mass [kg] 
 P.g = 9.81; % Gravity
-P.sg = 1
+P.sg = -1
 tauStall = 1079; % MG996R N.m
 recordVideo = true;
 aviName = 'Mechanism.avi';
-
-
 
 %% Symbolic Kinematics
 syms x y z dS real
 syms Rs rs Ls ls positive
 syms th [3 1] real
-phS = [3; 7; 11]*sym(pi)/6; % [pi/2; 7*pi/6; 11*pi/6]
+phS = [sym(pi)/2; -sym(pi)/6; -5*sym(pi)/6];   % 90, -30, -150 deg
 d = Rs - rs; % Distance between base and moving platform
 p = [x;y;z]; % End-effector position vector P
 k = [0;0;1]; % Vertical unit vector k
-c = sym(zeros(3,3)); dc = sym(zeros(3,3)); g =sym(zeros(3,1)); 
 
+c = sym(zeros(3,3)); dc = sym(zeros(3,3)); g = sym(zeros(3,1)); 
 for i = 1:3 % Loop through each of the 3 kinematic (arm)
-    u = [cos(phS(i)); sin(phS(i)); 0]; % Unit tangential vector perpendicular in XY plane
-    tg = [-sin(phS(i)); cos(phS(i)); 0]; % contact direction (parallel to axis servo)
+    u = [cos(phS(i)); sin(phS(i)); 0]; % Unit radial vector in XY plane
+    tg = [-sin(phS(i)); cos(phS(i)); 0]; % Tangential direction (parallel to servo axis)
     c(:,i)  = (d + Ls*cos(th(i)))*u - Ls*sin(th(i))*k - dS*tg; % elbow shifted -(r*u + dS*t)
-    dc(:,i) = Ls*(-sin(th(i))*u - cos(th(i))*k);          % dc/dtheta (use calculate Jacobian)
+    dc(:,i) = Ls*(-sin(th(i))*u - cos(th(i))*k);          % dc/dtheta (used to calculate Jacobian)
     g(i) = simplify((p-c(:,i)).'*(p-c(:,i)) - ls^2);   % loop constraint
 end
-disp('Loop constraints g_i(x,y,x, theta_i) = 0 : '); disp(g) % Equation of three symbolic
-
-
+disp('Loop constraints g_i(x,y,z, theta_i) = 0 : '); disp(g) % Equation of three symbolic
 
 %% Inverse Position kinematics : Ecosθ + Fsinθ + G = 0  (i = 1,2,3)
 thIK = sym(zeros(3,1));
@@ -52,8 +48,6 @@ for i = 1:3
 end
 disp('theta_i = IK(x,y,z): '); disp(thIK) 
 
-
-
 %% Jacobian: Jx*pdot = Jth*thdot -> pdot = J*thdot
 Jx  = sym(zeros(3,3));   Jth = sym(zeros(3,3));
 for i = 1:3
@@ -62,7 +56,7 @@ for i = 1:3
 end
 Jsym = Jx \ Jth; % J = Jx^(-1) * Jθ
 detJx = simplify(det(Jx)); % type 2 (forearm coplanar)
-detJth = simplify(det(Jth)); % type 1 (arm & forearm Collinear)
+detJth = simplify(det(Jth)); % type 1 (arm & forearm collinear)
 disp('Symbolic Jacobian J = '); disp(Jsym);
 disp('det(Jx) = '); disp(detJx)
 disp('det(Jth) = '); disp(detJth)
@@ -70,7 +64,7 @@ disp('det(Jth) = '); disp(detJth)
 
 %% Numeric functions and Validation
 % examine validation Step
-pt = [10; -8; -80]; % Defines a test target point (x,y,z)
+pt = [12; -7; -85]; % Defines a test target point (x,y,z)
 tt = ik_num(pt,P); % Run three servo angles in radians
 fprintf('\nIK  : theta = [%.2f %.2f %.2f] deg\n', rad2deg(tt));
 fprintf('FK  : p     = [%.3f %.3f %.3f] mm (error %.2e)\n', fk_num(tt,P), norm(fk_num(tt,P)-pt));
@@ -96,27 +90,25 @@ fprintf('IK(p_CAD)     = [%.2f %.2f %.2f] deg  CAD = [%.2f %.2f %.2f] deg\n', th
 %% Workspace of Delta Robot
 stp = 3; % step size 
 [WS, vol] = workspace_scan(P, -60:stp:60, -60:stp:60, -130:stp:-20, stp);
-
 fprintf('Workspace volume (usable, theta in [%d,%d] deg) = %.1f cm^3\n', P.thLim, vol/1000);
-figure('Name','Workspace','Color','w','Position',[50 50 1100 480]);
 
+figure('Name','Workspace','Color','w','Position',[50 50 1100 480]);
 % Graph 
 subplot(1,2,1);
 scatter3(WS(:,1),WS(:,2),WS(:,3),6,WS(:,3),'filled');
 axis equal; grid on; view(35,20);
 xlabel('x (mm)'); ylabel('y (mm)'); zlabel('z (mm)');
 title('Usable workspace'); colorbar;
-% Graph of Workspace
+% Graph of Workspace Slice at z = -81 mm
 subplot(1,2,2);
 sl = abs(WS(:,3)+80) < stp/2;
 plot(WS(sl,1),WS(sl,2),'b.','MarkerSize',6);
 hold on; axis equal; grid on;
-% Graph of z = -80 mm
-tt = linspace(0,2*pi,100);
-plot(20*cos(tt),20*sin(tt),'r-','LineWidth',1.5);
+% Graph of z = -81 mm
+tt_circ = linspace(0,2*pi,100);
+plot(30*cos(tt_circ),30*sin(tt_circ),'r-','LineWidth',1.5);
 xlabel('x (mm)'); ylabel('y (mm)');
-title('Slice z = -80 mm (red = test path)');
-
+title('Slice z = -81 mm (red = circle R = 30 mm)');
 
 %% Synthesis
 % Connecting Link
@@ -142,12 +134,37 @@ title(sprintf('Synthesis: R=%g, r=%g, L=%g mm', P.R, P.r, P.L));
 
 %% Trajectory: p, v, a, torque
 % Create trajectory
-T  = 8;   fps = 30;   % Set 8 second trajectory sampled at 30 frames
-N = T*fps + 1;
-t  = linspace(0,T,N).';   
-dt = t(2)-t(1);
-Rc = 20;  z0 = -80;  zA = 8; % Set trajectory parameter: 20 mm circle radius -80 mm and vertical wave amplitude 8 mm
-pth = [Rc*cos(2*pi*t/T), Rc*sin(2*pi*t/T), z0 + zA*sin(2*pi*t/(T/2))]; % x = Rcos(ωt), y = Rsin(ωt), z = z0 + zAsin(2ωt)
+trajMode = 'team'; 
+fps = 30;
+mj = @(x) 10*x.^3 - 15*x.^4 + 6*x.^5;    % minimum-jerk: s(0)=0, s(1)=1, v=a=0 
+if strcmp(trajMode, 'team')
+    Rc = 30; zc = -81; nLap = 2; Tc = 4; % Circle R = 30 mm at z = -81 mm, 2 rounds in 4 s
+    Tl = 1.65; % total time = 2*1.65 + 4 = 7.3 s
+    home = [0; 0; -119.55];
+    p0 = [Rc; 0; zc]; % Start point on circle
+    T = 2*Tl + Tc; % Total trajectory time sampled at 30 fps
+    N = round(T*fps) + 1;
+    t  = linspace(0,T,N).';   
+    dt = t(2)-t(1);
+    pth = zeros(N,3);
+    for kk = 1:N
+        tk = t(kk);
+        if tk <= Tl                            % 1) home -> circle start point
+            pth(kk,:) = (home + mj(tk/Tl)*(p0-home)).';
+        elseif tk <= Tl+Tc                     % 2) Circle 2 rounds with minimum-jerk profile
+            ph = 2*pi*nLap*mj((tk-Tl)/Tc);
+            pth(kk,:) = [Rc*cos(ph), Rc*sin(ph), zc];
+        else                                   % 3) Return to home
+            pth(kk,:) = (p0 + mj((tk-Tl-Tc)/Tl)*(home-p0)).';
+        end
+    end
+else
+    T  = 8;   N = T*fps + 1;
+    t = linspace(0,T,N).';   dt = t(2)-t(1);
+    Rc = 20;  z0 = -95;  zA = 8;
+    pth = [Rc*cos(2*pi*t/T), Rc*sin(2*pi*t/T), z0 + zA*sin(2*pi*t/(T/2))];
+end
+
 % Calculate Inverse Kinematics
 ink = zeros(N,3);
 for kk = 1:N
@@ -156,63 +173,60 @@ end
 assert(~any(isnan(ink(:))), 'Trajectory leaves the workspace');
 THdeg = rad2deg(ink); % Converts joint angles to degrees 
 fprintf('Servo range used: %.1f .. %.1f deg (limit %d..%d)\n', min(THdeg(:)), max(THdeg(:)), P.thLim); % Min and max angles used compared to servo limit
+
 % Calculate Velocity and Acceleration
-Av  = gradient(ink ,dt); % Velocity
-Ava = gradient(Av,dt); % Acceleration
-V = zeros(N,3); Ava = zeros(N,3); TAU = zeros(N,3);
-Jc = zeros(N,1); gvec = [0;0;-P.g];
-for kk = 1:N
-    Jn = jac_num(pth(kk,:).',ink(kk,:).',P);
-    V(kk,:) = (Jn*Av(kk,:).').';
-    Jc(kk) = cond(Jn);
-end
-Ava = gradient(V,dt); % p_ddot = J*(th_ddot) + Jdot*(th_dot) 
-% Jacobian
+Av   = gradient(ink, dt); % Joint angular velocity [rad/s]
+V    = zeros(N,3); 
+TAU  = zeros(N,3);
+Jc   = zeros(N,1); 
+gvec = [0; 0; -P.g];
 Jall = zeros(3,3,N);
 for kk = 1:N
-    Jn = jac_num(pth(kk,:).',ink(kk,:).',P);
+    Jn = jac_num(pth(kk,:).', ink(kk,:).', P);
     Jall(:,:,kk) = Jn;
-    V(kk,:) = (Jn*Av(kk,:).').';
+    V(kk,:) = (Jn * Av(kk,:).').';
     Jc(kk) = cond(Jn);
 end
-Ava = gradient(V,dt);
+
+Ava = gradient(V,dt); % p_ddot = J*(th_ddot) + Jdot*(th_dot) 
+% Jacobian
 for kk = 1:N
     Jn = Jall(:,:,kk);
-    Fneed = P.m*(Ava(kk,:).'*1e-3 - gvec);
-    TAU(kk,:) = (Jn.'*Fneed).';
-end 
+    Fneed = P.m * (Ava(kk,:).'*1e-3 - gvec);
+    TAU(kk,:) = (Jn.' * Fneed).';
+end
+
 % Examine value
 Vref = gradient(pth,dt); % Check Jacobian derived velocity and numerical differentiation of the path
 fprintf('Velocity check  max|J*thdot - dp/dt| = %.3f mm/s\n', max(vecnorm(V-Vref,2,2)));
 fprintf('Max torque = %.1f N.mm (%.2f kg.cm), %.1f %% of stall\n', max(abs(TAU(:))), max(abs(TAU(:)))/98.07, 100*max(abs(TAU(:)))/tauStall);
 fprintf('Max cond(J) = %.2f (The closer infinity, the closer to a singularity)\n', max(Jc));
+
 % Plot kinematics 
 % plot p(mm) Give blue -> x, red -> y, yellow -> z
-figure('Name','Kinematics','Color','w','Position',[80 80 900 1200]);
-subplot(4,1,1); plot(t,pth); ylabel('p (mm)'); ylim([-100 40]);
-legend('x','y','z','Location','eastoutside'); grid on; subplot(4,1,2);
+figure('Name','Kinematics','Color','w','Position',[80 80 900 700]);
+subplot(4,1,1); plot(t,pth); ylabel('p (mm)'); 
+legend('x','y','z','Location','eastoutside'); grid on; 
 
 % plot θ
-plot(t,THdeg); ylim([-50 20]);
+subplot(4,1,2); plot(t,THdeg); 
 ylabel('\theta (deg)'); legend('\theta_1','\theta_2','\theta_3','Location','eastoutside');
-grid on; subplot(4,1,3);
+grid on;
 
 % plot Velocity (mm/s)
-plot(t,V); ylim([-600 600])
+subplot(4,1,3); plot(t,V); ylim([-1500 2000])
 ylabel('v (mm/s)'); grid on;
-subplot(4,1,4);
 
 % plot Acceleration (mm/s^2)
-plot(t,Ava); ylim([-30000 25000])
+subplot(4,1,4); plot(t,Ava); 
 ylabel('a (mm/s^2)'); xlabel('t (s)'); grid on;
 
 % Export to simscape model
 save('delta_trajectory.mat','t','pth','ink','THdeg','V','Ava','TAU','P');
 
-
 %% Animation
 % Create GUT
-fig = figure('Name','Delta Robot','Color','w','Position',[60 60 1000 750], 'MenuBar','none','ToolBar','none','Resize','off');
+fig = figure('Name','Delta Robot','Color','w','Position',[60 60 1280 720], 'MenuBar','none','ToolBar','none','Resize','off');
 
 % 3D robot
 ax3 = axes('Parent',fig,'Position',[0.04 0.17 0.52 0.77]); % 3D view point
@@ -230,8 +244,8 @@ for i = 1:3
 end
 plot(axTh,[0 T],[P.thLim(1) P.thLim(1)],'k--'); 
 plot(axTh,[0 T],[P.thLim(2) P.thLim(2)],'k--');
-hCur = plot(axTh,[0 0],[-20 25],'Color',[.5 .5 .5]);
-ylim(axTh,[-40 25]); 
+hCur = plot(axTh,[0 0],[P.thLim(1)-20 P.thLim(2)+20],'Color',[.5 .5 .5]);
+ylim(axTh); 
 xlim(axTh,[0 T]); ylabel(axTh,'\theta (deg)'); title(axTh,'Servo angles');
 legend(axTh,{'\theta_1','\theta_2','\theta_3'},'Location','northeast','Orientation','horizontal');
 
@@ -245,7 +259,7 @@ for i = 1:3
 end
 xlim(axTa,[0 T]); ylabel(axTa,'\tau (N\cdotmm)'); xlabel(axTa,'t (s)'); 
 title(axTa,'Servo torque (virtual work)');
-hCur2 = plot(axTa,[0 0],[min(TAU(:))*1.3 max(TAU(:))*0.7+1],'Color',[.5 .5 .5]);
+hCur2 = plot(axTa,[0 0],[min(TAU(:))*1.3 max(TAU(:))*1.3+1],'Color',[.5 .5 .5]);
 
 % Information Display
 hInfo = uicontrol('Style','text','Units','normalized','Position',[0.62 0.10 0.36 0.28], ...
@@ -258,7 +272,7 @@ btn = uicontrol('Style','togglebutton','String','Pause','Units','normalized', ..
 % Video record
 if recordVideo
     vw = VideoWriter(aviName,'Motion JPEG AVI');  
-    vw.FrameRate = 30;  
+    vw.FrameRate = fps;  
     vw.Quality = 80;  
     open(vw);
 end
@@ -275,13 +289,10 @@ for kk = 1:N
     update_robot(H,pth(kk,:).',ink(kk,:).',pth(1:kk,:),P);
     % update time
     set([hCur hCur2],'XData',[t(kk) t(kk)]);
-    % update servo angle marker
+    % update servo  marker
     for i = 1:3
-        set(hDot(i),'XData',t(kk),'YData',THdeg(kk,i)); 
-    end
-    % update servo torque marker
-    for i = 1:3
-        set(hDot2(i),'XData',t(kk),'YData',TAU(kk,i)); 
+        set(hDot(i),'XData',t(kk),'YData',THdeg(kk,i));
+        set(hDot2(i),'XData',t(kk),'YData',TAU(kk,i));
     end
     % Instantaneous power
     Pin  = TAU(kk,:)*Av(kk,:).';                                   
@@ -326,12 +337,13 @@ function th = ik_num(p,P) % closed-form inverse kinematics
         wt = -p(1)*sin(P.phi(i)) + p(2)*cos(P.phi(i));
         G = (w-d)^2 + (wt+P.ds)^2 + p(3)^2 + P.L^2 - P.l^2;
         D = E^2 + F^2 - G^2;
-    if D < 0, th(:) = NaN; 
-        return; 
+        if D < 0
+            th(:) = NaN; 
+            return; 
+        end
+        th(i) = 2*atan2(-F + P.sg*sqrt(D), G - E);
     end
-    th(i) = 2*atan2(-F + P.sg*sqrt(D), G - E); % Calculate joint angle 
-    end
-    th = mod(th,2*pi) - pi; % [0, 360]
+    th = mod(th + pi, 2*pi) - pi; % Fixed: wrap to [-pi, pi]
 end
  
 function p = fk_num(th,P) % forward kinematics : platform below base
@@ -389,7 +401,7 @@ end
 % Create Link of Delta Robot
 function H = make_robot(ax,P)
     hold(ax,'on'); grid(ax,'on'); axis(ax,'equal');
-    set(ax,'XLim',[-125 125],'YLim',[-125 125],'ZLim',[-140 20]);
+    set(ax,'XLim',[-100 100],'YLim',[-100 100],'ZLim',[-140 25]);
     view(ax,-38,22);   xlabel(ax,'X (mm)'); ylabel(ax,'Y (mm)'); zlabel(ax,'Z (mm)');
     B = zeros(3,3);
     for i = 1:3
@@ -399,11 +411,15 @@ function H = make_robot(ax,P)
     th = linspace(0,2*pi,100);
     plot3(ax,(P.R+P.L)*cos(th),(P.R+P.L)*sin(th),zeros(size(th)),':','Color',[.6 .6 .6]);   % reach circle of arms
     plot3(ax,B(1,:),B(2,:),B(3,:),'s','MarkerSize',10,'MarkerFaceColor',[.2 .2 .2],'MarkerEdgeColor','k');
+    lab = 'ABC'; % revolute A, B, C = servo 1,2, 3
     for i = 1:3
-        H.arm(i)  = plot3(ax,nan,nan,nan,'-','Color',[0.0 0.35 0.85],'LineWidth',5);
-        H.bar(i)  = plot3(ax,nan,nan,nan,'-','Color',[.5 .5 .5],'LineWidth',3);
-        H.rodA(i) = plot3(ax,nan,nan,nan,'-','Color','k','LineWidth',2);
-        H.rodB(i) = plot3(ax,nan,nan,nan,'-','Color','k','LineWidth',2);
+        text(ax,1.3*B(1,i),1.3*B(2,i),B(3,i)+9,lab(i),'FontSize',14,'FontWeight','bold','Color',[0.6 0 0],'HorizontalAlignment','center');
+    end
+    for i = 1:3
+        H.arm(i)  = plot3(ax,nan,nan,nan,'-','Color',[0.35 0.72 0.50],'LineWidth',5);
+        H.bar(i)  = plot3(ax,nan,nan,nan,'-','Color',[0.35 0.72 0.50],'LineWidth',3);
+        H.rodA(i) = plot3(ax,nan,nan,nan,'-','Color',[0.76 0.74 0.33],'LineWidth',2);
+        H.rodB(i) = plot3(ax,nan,nan,nan,'-','Color',[0.76 0.74 0.33],'LineWidth',2);
         H.pbar(i) = plot3(ax,nan,nan,nan,'-','Color',[.5 .5 .5],'LineWidth',3);
         H.ref(i)  = plot3(ax,nan,nan,nan,'k--','LineWidth',1);
         H.arc(i)  = plot3(ax,nan,nan,nan,'-','Color',[0.85 0.1 0.1],'LineWidth',2);
@@ -453,3 +469,4 @@ function pause_cb(src,~)
         set(src,'String','Pause','BackgroundColor',[0.2 0.9 0.2]);
     end
 end
+
