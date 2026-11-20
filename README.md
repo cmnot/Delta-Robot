@@ -93,31 +93,34 @@ $$M = 6(11-1) - 5(3) - 4(6) - 3(6) = 3 \ \text{DoF}$$
 ## Part II: Symbolic Math
 Analysis of Position, Angle, Velocity, Acceleration, and Force using MATLAB.
 
-Workspace volume (usable, theta in [15,170] deg) = 332.0 cm^3
-<p align="center">
-<img width="625" height="272" alt="image" src="https://github.com/user-attachments/assets/e6227780-7c6d-4f35-9f7e-55ee09cd5e41" />
-</p>
-Total width approx = 229.5 mm 
+Workspace volume (usable, theta in [0,90] deg) = 160.8 cm^3
 
 <p align="center">
-<img width="625" height="376" alt="image" src="https://github.com/user-attachments/assets/23b1d2ed-b51f-4edb-b01d-192803e11118" />
+<img width="640" height="279" alt="image" src="https://github.com/user-attachments/assets/0051185e-6d61-4be0-8bdc-254378b4d84c" />
 </p>
 
-Velocity check  max|J*thdot - dp/dt| = 3484.253 mm/s
+Total width approx = 139.8 mm 
+<p align="center">
+<img width="640" height="385" alt="image" src="https://github.com/user-attachments/assets/cb1367c2-3305-4ac0-ad1f-4cb13ec99606" />
+</p>
 
-Max torque = 38.4 N.mm (0.39 kg.cm), 3.6 % of stall
+Velocity check  max|J*thdot - dp/dt| = 3567.633 mm/s
 
-Max cond(J) = 1.46 (The closer infinity, the closer to a singularity)
+Max torque = 61.4 N.mm (0.63 kg.cm), 5.7 % of stall
+
+Max cond(J) = 3.08 (The closer infinity, the closer to a singularity)
 
 <p align="center">
-<img width="625" height="693" alt="image" src="https://github.com/user-attachments/assets/edff152e-b785-4e8c-92b9-fa34219badd9" />
+<img width="640" height="850" alt="image" src="https://github.com/user-attachments/assets/d0f40537-ca2f-4907-803b-105d390131e2" />
 
-<img width="1600" height="900" alt="image" src="https://github.com/user-attachments/assets/8daf070b-0038-4514-a19e-c91c1f173d7e" />
+<img width="900" height="750" alt="image" src="https://github.com/user-attachments/assets/26b3ce82-a465-4ce3-bae3-465d74cb0a09" />
+
 </p>
 
 Animation
 
-https://github.com/user-attachments/assets/49e93c41-96c3-493c-aa9b-d0f54fe8aff5
+
+
 
 [Click to open folder] [software](software/)
 
